@@ -23,9 +23,17 @@ we have to use the policy to generate a list of files -- and then give this to
 an external script. The policy for this can be f.ex. /root/set-immutable.policy containing:
 
 ~~~
+include(/gpfs/gpfsmgmt/etc/common.include)
 RULE EXTERNAL LIST 'setimmutable' EXEC '/root/set-immutable.sh' OPTS '7'
-RULE 'findImmutable' LIST 'setimmutable' FOR FILESET ('testimmutability') WHERE NOT (MISC_ATTRIBUTES LIKE '%X%')
+RULE 'findImmutable' LIST 'setimmutable' FOR FILESET ('testimmutability') WHERE NOT (MISC_ATTRIBUTES LIKE '%X%') AND NOT exclude_list
 ~~~
+
+---
+**NOTE**
+
+Please make sure to exclude .mcstore, .snapshots, and similar folders that shouldn't be made immutable! I have these in the exclude_list from "common.include".
+
+---
 
 When applied using:
 
